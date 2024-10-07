@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ecom.model.*;
+import com.ecom.service.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,8 @@ import com.ecom.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
+import static org.springframework.http.ResponseEntity.badRequest;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/user")
@@ -46,6 +49,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderServiceImpl orderServiceImpl;
 
     @GetMapping("/profiledetailsofuser")
     public ResponseEntity<UserDtls> getUserProfile(Principal p) {
@@ -59,15 +64,29 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/getstatus/{id}")
+    public ResponseEntity<String> getStatus(@PathVariable Integer id) {
+        String status = orderServiceImpl.getProductStatusById(id);
+        if (status == null || status.isEmpty()) {
+            return ResponseEntity.badRequest().body("Order not found");
+        }
+        return ResponseEntity.ok(status); // Return status directly
+    }
+
 
     @PostMapping("/api/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         System.out.println(email);
         if (email == null || email.isEmpty()) {
-            return ResponseEntity.badRequest().body("Email is required");
+            return badRequest().body("Email is required");
         }
-        userService.sendOtp(email);
+        boolean isPresent =  userService.sendOtp(email);
+        if (!isPresent) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: Email not found");
+        }
+
         return ResponseEntity.ok("OTP sent to email.");
     }
 
@@ -166,19 +185,6 @@ public class UserController {
         return userDtls;
     }
 
-//    @GetMapping("/orders")
-//    public String orderPage(Principal p, Model m) {
-//        UserDtls user = getLoggedInUserDetails(p);
-//        List<Cart> carts = cartService.getCartsByUser(user.getId());
-//        m.addAttribute("carts", carts);
-//        if (carts.size() > 0) {
-//            Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-//            Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;
-//            m.addAttribute("orderPrice", orderPrice);
-//            m.addAttribute("totalOrderPrice", totalOrderPrice);
-//        }
-//        return "/user/order";
-//    }
 
     @PostMapping("/save-order")
     public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
@@ -232,20 +238,36 @@ public class UserController {
         return "redirect:/user/user-orders";
     }
 
-    @GetMapping("/profile")
-    public String profile() {
-        return "/user/profile";
+
+
+    @DeleteMapping("/cancel-order/{id}")
+    public ResponseEntity<String> cancelOrder(@PathVariable Integer id) {
+        String canceled = orderServiceImpl.deleteOrder(id);
+
+        if (canceled.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("Order canceled successfully");
+        }
     }
 
+
+
+
     @PostMapping("/update-profile")
-    public String updateProfile(@ModelAttribute UserDtls user, @RequestParam MultipartFile img, HttpSession session) {
-        UserDtls updateUserProfile = userService.updateUserProfile(user, img);
-        if (ObjectUtils.isEmpty(updateUserProfile)) {
-            session.setAttribute("errorMsg", "Profile not updated");
-        } else {
-            session.setAttribute("succMsg", "Profile Updated");
+    public ResponseEntity<?> updateProfile(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile img) {
+        try {
+            UserDtls updatedUserProfile = userService.updateUserProfile(user, img);
+
+            if (ObjectUtils.isEmpty(updatedUserProfile)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Profile not updated");
+            } else {
+                return ResponseEntity.ok(updatedUserProfile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating profile: " + e.getMessage());
         }
-        return "redirect:/user/profile";
     }
 
     @PostMapping("/change-password")

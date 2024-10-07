@@ -38,7 +38,7 @@ public interface UserService {
 
 	public String generateOtp() ;
 
-	public void sendOtp(String email);
+	public boolean sendOtp(String email);
 
 	public boolean validateOtp(String email, String otp);
 

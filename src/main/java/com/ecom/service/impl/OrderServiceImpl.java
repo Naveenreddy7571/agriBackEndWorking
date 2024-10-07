@@ -6,16 +6,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ecom.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ecom.model.Cart;
-import com.ecom.model.OrderAddress;
-import com.ecom.model.OrderRequest;
-import com.ecom.model.ProductOrder;
 import com.ecom.repository.CartRepository;
 import com.ecom.repository.ProductOrderRepository;
 import com.ecom.service.OrderService;
@@ -90,6 +87,8 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 	}
 
+
+
 	@Override
 	public List<ProductOrder> getAllOrders() {
 		return orderRepository.findAll();
@@ -99,6 +98,31 @@ public class OrderServiceImpl implements OrderService {
 	public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		return orderRepository.findAll(pageable);
+
+	}
+
+	@Override
+	public String getProductStatusById(Integer id) {
+		Optional<ProductOrder> order = orderRepository.findById(id);
+		if(order.isPresent())
+		{
+			ProductOrder productOrder = order.get();
+			return productOrder.getStatus();
+		}
+		return "";
+
+
+	}
+
+	@Override
+	public String deleteOrder(Integer id) {
+		try {
+			orderRepository.deleteById(id);
+		}
+		catch(Exception e){
+			return "";
+		}
+		return "Product canceled successfully";
 
 	}
 

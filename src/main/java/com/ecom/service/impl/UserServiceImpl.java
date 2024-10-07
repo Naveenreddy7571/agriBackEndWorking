@@ -187,20 +187,32 @@ public class UserServiceImpl implements UserService {
 		return String.valueOf((int)((Math.random() * (9999 - 1000)) + 1000));
 	}
 
-	public void sendOtp(String email) {
-		UserDtls user = userRepository.findByEmail(email);
+	public boolean sendOtp(String email) {
+		Optional<UserDtls> optionalUser = Optional.ofNullable(userRepository.findByEmail(email));
 
+		// If user is not found, return false
+		if(optionalUser.isEmpty()) {
+			return false;
+		}
+
+		// Unwrap the user
+		UserDtls user = optionalUser.get();
+
+		// Generate OTP and save it to the user object
 		String otp = generateOtp();
 		user.setOtp(otp);
 		userRepository.save(user);
 
-		// Send OTP Email
+		// Send OTP email
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(user.getEmail());
 		message.setSubject("OTP for Password Reset");
 		message.setText("Your OTP is: " + otp);
 		mailSender.send(message);
+
+		return true;
 	}
+
 
 	public boolean validateOtp(String email, String otp) {
 		UserDtls user = userRepository.findByEmail(email);

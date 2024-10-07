@@ -2,6 +2,7 @@ package com.ecom.service;
 
 import java.util.List;
 
+import com.ecom.model.Product;
 import org.springframework.data.domain.Page;
 
 import com.ecom.model.OrderRequest;
@@ -20,4 +21,8 @@ public interface OrderService {
 	public ProductOrder getOrdersByOrderId(String orderId);
 	
 	public Page<ProductOrder> getAllOrdersPagination(Integer pageNo,Integer pageSize);
+
+	public String getProductStatusById(Integer id);
+
+	public String deleteOrder(Integer id);
 }

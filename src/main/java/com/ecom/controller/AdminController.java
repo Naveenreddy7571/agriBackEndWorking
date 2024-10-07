@@ -243,29 +243,7 @@ public class AdminController {
 
 
 
-//	@GetMapping("/products")
-//	public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch,
-//			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-//			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-//
-//
-//		Page<Product> page = null;
-//		if (ch != null && ch.length() > 0) {
-//			page = productService.searchProductPagination(pageNo, pageSize, ch);
-//		} else {
-//			page = productService.getAllProductsPagination(pageNo, pageSize);
-//		}
-//		m.addAttribute("products", page.getContent());
-//
-//		m.addAttribute("pageNo", page.getNumber());
-//		m.addAttribute("pageSize", pageSize);
-//		m.addAttribute("totalElements", page.getTotalElements());
-//		m.addAttribute("totalPages", page.getTotalPages());
-//		m.addAttribute("isFirst", page.isFirst());
-//		m.addAttribute("isLast", page.isLast());
-//
-//		return "admin/products";
-//	}
+
 
 
 	@GetMapping("/myproducts")
@@ -377,41 +355,7 @@ public class AdminController {
 
 
 
-//	@GetMapping("/search-order")
-//	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,
-//			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-//			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-//
-//		if (orderId != null && orderId.length() > 0) {
-//
-//			ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
-//
-//			if (ObjectUtils.isEmpty(order)) {
-//				session.setAttribute("errorMsg", "Incorrect orderId");
-//				m.addAttribute("orderDtls", null);
-//			} else {
-//				m.addAttribute("orderDtls", order);
-//			}
-//
-//			m.addAttribute("srch", true);
-//		} else {
-//
-//
-//			Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
-//			m.addAttribute("orders", page);
-//			m.addAttribute("srch", false);
-//
-//			m.addAttribute("pageNo", page.getNumber());
-//			m.addAttribute("pageSize", pageSize);
-//			m.addAttribute("totalElements", page.getTotalElements());
-//			m.addAttribute("totalPages", page.getTotalPages());
-//			m.addAttribute("isFirst", page.isFirst());
-//			m.addAttribute("isLast", page.isLast());
-//
-//		}
-//		return "/admin/orders";
-//
-//	}
+
 		@GetMapping("/search-order")
 		public ResponseEntity<?> searchProduct(
 				@RequestParam String orderId,
@@ -472,7 +416,7 @@ public class AdminController {
 			if (ObjectUtils.isEmpty(updatedUserProfile)) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Profile not updated");
 			} else {
-				return ResponseEntity.ok("Profile Updated");
+				return ResponseEntity.ok(updatedUserProfile);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

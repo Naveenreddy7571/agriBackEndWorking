@@ -110,47 +110,7 @@ public class HomeController {
         return ResponseEntity.ok(productDtos);
     }
 
-//
-//	@GetMapping("/allproducts")
-//	public ResponseEntity<List<Product>> getAllProducts(){
-//		return ResponseEntity<List<Product>>(productService.getAllProducts(),HttpStatus.OK);
-//	}
-//@GetMapping("/allproducts")
-//public ResponseEntity<List<Product>> getAllProducts() {
-//	List<Product> products = productService.getAllProducts();
-//	return new ResponseEntity<>(products, HttpStatus.OK);
-//}
-//	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category,
-//			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-//			@RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
-//			@RequestParam(defaultValue = "") String ch) {
-//
-//		List<Category> categories = categoryService.getAllActiveCategory();
-//		m.addAttribute("paramValue", category);
-//		m.addAttribute("categories", categories);
-//
-////		List<Product> products = productService.getAllActiveProducts(category);
-////		m.addAttribute("products", products);
-//		Page<Product> page = null;
-//		if (StringUtils.isEmpty(ch)) {
-//			page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
-//		} else {
-//			page = productService.searchActiveProductPagination(pageNo, pageSize, category, ch);
-//		}
-//
-//		List<Product> products = page.getContent();
-//		m.addAttribute("products", products);
-//		m.addAttribute("productsSize", products.size());
-//
-//		m.addAttribute("pageNo", page.getNumber());
-//		m.addAttribute("pageSize", pageSize);
-//		m.addAttribute("totalElements", page.getTotalElements());
-//		m.addAttribute("totalPages", page.getTotalPages());
-//		m.addAttribute("isFirst", page.isFirst());
-//		m.addAttribute("isLast", page.isLast());
-//
-//		return "product";
-//	}
+
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> product(@PathVariable int id) {
@@ -186,76 +146,6 @@ public class HomeController {
         }
     }
 
-
-//	Forgot Password Code 
-
-//	@GetMapping("/forgot-password")
-//	public String showForgotPassword() {
-//		return "forgot_password.html";
-//	}
-//
-//	@PostMapping("/forgot-password")
-//	public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request)
-//			throws UnsupportedEncodingException, MessagingException {
-//
-//		UserDtls userByEmail = userService.getUserByEmail(email);
-//
-//		if (ObjectUtils.isEmpty(userByEmail)) {
-//			session.setAttribute("errorMsg", "Invalid email");
-//		} else {
-//
-//			String resetToken = UUID.randomUUID().toString();
-//			userService.updateUserResetToken(email, resetToken);
-//
-//			// Generate URL :
-//			// http://localhost:8080/reset-password?token=sfgdbgfswegfbdgfewgvsrg
-//
-//			String url = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;
-//
-//			Boolean sendMail = commonUtil.sendMail(url, email);
-//
-//			if (sendMail) {
-//				session.setAttribute("succMsg", "Please check your email..Password Reset link sent");
-//			} else {
-//				session.setAttribute("errorMsg", "Somethong wrong on server ! Email not send");
-//			}
-//		}
-//
-//		return "redirect:/forgot-password";
-//	}
-//
-//	@GetMapping("/reset-password")
-//	public String showResetPassword(@RequestParam String token, HttpSession session, Model m) {
-//
-//		UserDtls userByToken = userService.getUserByToken(token);
-//
-//		if (userByToken == null) {
-//			m.addAttribute("msg", "Your link is invalid or expired !!");
-//			return "message";
-//		}
-//		m.addAttribute("token", token);
-//		return "reset_password";
-//	}
-//
-//	@PostMapping("/reset-password")
-//	public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session,
-//			Model m) {
-//
-//		UserDtls userByToken = userService.getUserByToken(token);
-//		if (userByToken == null) {
-//			m.addAttribute("errorMsg", "Your link is invalid or expired !!");
-//			return "message";
-//		} else {
-//			userByToken.setPassword(passwordEncoder.encode(password));
-//			userByToken.setResetToken(null);
-//			userService.updateUser(userByToken);
-//			// session.setAttribute("succMsg", "Password change successfully");
-//			m.addAttribute("msg", "Password change successfully");
-//
-//			return "message";
-//		}
-//
-//	}
 
     @GetMapping("/search")
     public String searchProduct(@RequestParam String ch, Model m) {
