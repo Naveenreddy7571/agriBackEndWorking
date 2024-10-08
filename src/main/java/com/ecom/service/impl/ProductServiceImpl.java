@@ -168,5 +168,12 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findByAddedBy(user);
 	}
 
+	@Override
+	public Page<Product> findAll(Pageable pageable) {
+		System.out.println("came to product service implementation");
+		return productRepository.findAll(pageable);
+
+	}
+
 
 }

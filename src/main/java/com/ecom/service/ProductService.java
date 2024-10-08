@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ecom.model.UserDtls;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Product;
@@ -35,4 +36,5 @@ public interface ProductService {
 	public List<Product> getProductsByUser(UserDtls admin);
 
 
+    Page<Product> findAll(Pageable pageable);
 }
